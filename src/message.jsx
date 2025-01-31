@@ -12,7 +12,7 @@ const Message = ({ onSendMessage }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="input-container">
       <input
         type="text"
         value={message}

@@ -1,14 +1,13 @@
 import React from "react";
+import "./Chat.css";
 
 const Chat = ({ messages }) => {
   return (
-    <div
-      style={{ height: "400px", overflowY: "scroll", border: "1px solid #ccc" }}
-    >
+    <div className="chat-container">
       {messages.map((msg, index) => (
         <div
           key={index}
-          style={{ textAlign: msg.from === "me" ? "right" : "left" }}
+          className={`message ${msg.from === "me" ? "me" : "other"}`}
         >
           <p>{msg.text}</p>
         </div>

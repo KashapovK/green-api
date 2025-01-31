@@ -15,6 +15,10 @@ const App = () => {
   };
 
   const handleSendMessage = async (message) => {
+    // Добавляем отправленное сообщение в состояние
+    const newMessage = { from: "me", text: message };
+    setMessages((prevMessages) => [...prevMessages, newMessage]);
+
     try {
       await axios.post(
         `https://api.green-api.com/wa/sendMessage/${idInstance}/${apiTokenInstance}`,
@@ -23,9 +27,12 @@ const App = () => {
           message: message,
         },
       );
-      setMessages([...messages, { from: "me", text: message }]);
     } catch (error) {
       console.error("Ошибка при отправке сообщения:", error);
+      /* Удаляем сообщение из состояния в случае ошибки. Отключено в dev сборке
+      setMessages((prevMessages) =>
+        prevMessages.filter((msg) => msg.text !== message)
+      );*/
     }
   };
 
@@ -37,7 +44,15 @@ const App = () => {
       const newMessages = response.data.filter(
         (msg) => msg.from === `${phoneNumber}@c.ru`,
       );
-      setMessages((prevMessages) => [...prevMessages, ...newMessages]);
+
+      // Обновляем состояние сообщениями, исключая дубликаты
+      setMessages((prevMessages) => {
+        const existingMessages = new Set(prevMessages.map((msg) => msg.text));
+        const filteredNewMessages = newMessages.filter(
+          (msg) => !existingMessages.has(msg.text),
+        );
+        return [...prevMessages, ...filteredNewMessages];
+      });
     } catch (error) {
       console.error("Ошибка при загрузки сообщений:", error);
     }
@@ -56,23 +71,23 @@ const App = () => {
         <div>
           <input
             type="text"
-            placeholder="ID Instance"
+            placeholder="ID"
             value={idInstance}
             onChange={(e) => setIdInstance(e.target.value)}
           />
           <input
             type="text"
-            placeholder="API Token"
+            placeholder="API Токен"
             value={apiTokenInstance}
             onChange={(e) => setApiTokenInstance(e.target.value)}
           />
           <input
             type="text"
-            placeholder="Phone Number"
+            placeholder="Номер телефона"
             value={phoneNumber}
             onChange={(e) => setPhoneNumber(e.target.value)}
           />
-          <button onClick={handleStartChat}>Start Chat</button>
+          <button onClick={handleStartChat}>Начать чат</button>
         </div>
       ) : (
         <div>
