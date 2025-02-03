@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "./css/message.css";
 
 const Message = ({ onSendMessage }) => {
   const [message, setMessage] = useState("");
@@ -18,8 +19,11 @@ const Message = ({ onSendMessage }) => {
         value={message}
         onChange={(e) => setMessage(e.target.value)}
         placeholder="Введите сообщение..."
+        className="message-input"
       />
-      <button type="submit">Отправить</button>
+      <button type="submit" className="send-button">
+        Отправить
+      </button>
     </form>
   );
 };

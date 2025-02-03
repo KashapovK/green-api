@@ -15,7 +15,6 @@ const App = () => {
   };
 
   const handleSendMessage = async (message) => {
-    // Добавляем отправленное сообщение в состояние
     const newMessage = { from: "me", text: message };
     setMessages((prevMessages) => [...prevMessages, newMessage]);
 
@@ -26,13 +25,21 @@ const App = () => {
           chatId: `${phoneNumber}@c.ru`,
           message: message,
         },
+        {
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
+            "Access-Control-Allow-Credentials": "true",
+            'Content-Type': 'text/plain',
+          },
+        },
       );
     } catch (error) {
       console.error("Ошибка при отправке сообщения:", error);
-      /* Удаляем сообщение из состояния в случае ошибки. Отключено в dev сборке
-      setMessages((prevMessages) =>
+      // Удаляю сообщение из состояния в случае ошибки. Отключено в dev сборке
+      /* setMessages((prevMessages) =>
         prevMessages.filter((msg) => msg.text !== message)
-      );*/
+      ); */
     }
   };
 
@@ -40,12 +47,21 @@ const App = () => {
     try {
       const response = await axios.get(
         `https://api.green-api.com/wa/getMessages/${idInstance}/${apiTokenInstance}`,
+        {
+          //CORS
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
+            "Access-Control-Allow-Credentials": "true",
+            'Content-Type': 'text/plain',
+          },
+        },
       );
+
       const newMessages = response.data.filter(
         (msg) => msg.from === `${phoneNumber}@c.ru`,
       );
 
-      // Обновляем состояние сообщениями, исключая дубликаты
       setMessages((prevMessages) => {
         const existingMessages = new Set(prevMessages.map((msg) => msg.text));
         const filteredNewMessages = newMessages.filter(

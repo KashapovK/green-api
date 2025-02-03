@@ -1,5 +1,5 @@
 import React from "react";
-import "./Chat.css";
+import "./css/chat.css";
 
 const Chat = ({ messages }) => {
   return (
@@ -9,7 +9,7 @@ const Chat = ({ messages }) => {
           key={index}
           className={`message ${msg.from === "me" ? "me" : "other"}`}
         >
-          <p>{msg.text}</p>
+          {msg.text}
         </div>
       ))}
     </div>
