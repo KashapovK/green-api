@@ -3,6 +3,22 @@ import axios from "axios";
 import Chat from "./chat";
 import Message from "./message";
 
+// Генерация моковых сообщений
+const generateMockMessage = (phoneNumber) => {
+  const messages = [
+    "Привет! Как дела?",
+    "ааааааааа",
+    "бббббббббббб",
+    "ддддддддддддддд",
+    "ггггггггггггггг",
+  ];
+  const randomIndex = Math.floor(Math.random() * messages.length);
+  return {
+    from: `${phoneNumber}@c.ru`,
+    text: messages[randomIndex],
+  };
+};
+
 const App = () => {
   const [idInstance, setIdInstance] = useState("");
   const [apiTokenInstance, setApiTokenInstance] = useState("");
@@ -44,6 +60,12 @@ const App = () => {
   };
 
   const fetchMessages = async () => {
+    //
+    const mockMessage = generateMockMessage(phoneNumber);
+    setMessages((prevMessages) => [...prevMessages, mockMessage]);
+
+    // Закомментировано во время работы с моками
+    /*
     try {
       const response = await axios.get(
         `https://api.green-api.com/wa/getMessages/${idInstance}/${apiTokenInstance}`,
@@ -72,6 +94,7 @@ const App = () => {
     } catch (error) {
       console.error("Ошибка при загрузки сообщений:", error);
     }
+    */
   };
 
   useEffect(() => {
