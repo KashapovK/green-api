@@ -30,7 +30,7 @@ const App = () => {
             "Access-Control-Allow-Origin": "*",
             "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
             "Access-Control-Allow-Credentials": "true",
-            'Content-Type': 'text/plain',
+            "Content-Type": "text/plain",
           },
         },
       );
@@ -53,7 +53,7 @@ const App = () => {
             "Access-Control-Allow-Origin": "*",
             "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
             "Access-Control-Allow-Credentials": "true",
-            'Content-Type': 'text/plain',
+            "Content-Type": "text/plain",
           },
         },
       );
