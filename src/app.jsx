@@ -58,13 +58,15 @@ const App = () => {
       );
 
       const newMessages = response.data.filter(
-        (msg) => msg.from === `${phoneNumber}@c.us`,
+        (msg) =>
+          msg.from === `${phoneNumber}@c.us` && msg.type === "textMessage",
       );
 
       setMessages((prevMessages) => {
         const existingMessages = new Set(prevMessages.map((msg) => msg.text));
         const filteredNewMessages = newMessages.filter(
-          (msg) => !existingMessages.has(msg.text),
+          (msg) =>
+            !existingMessages.has(msg.messageData.textMessageData.textMessage),
         );
 
         const formattedNewMessages = filteredNewMessages.map((msg) => ({
