@@ -7,6 +7,7 @@ const App = () => {
   const [idInstance, setIdInstance] = useState("");
   const [apiTokenInstance, setApiTokenInstance] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [apiUrl, setApiUrl] = useState("");
   const [messages, setMessages] = useState([]);
   const [chatStarted, setChatStarted] = useState(false);
 
@@ -20,16 +21,13 @@ const App = () => {
 
     try {
       await axios.post(
-        `https://api.green-api.com/waInstance${idInstance}/sendMessage/${apiTokenInstance}`,
+        `${apiUrl}/waInstance${idInstance}/sendMessage/${apiTokenInstance}`,
         {
           chatId: `${phoneNumber}@c.us`,
           message: message,
         },
         {
           headers: {
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "GET, POST, DELETE",
-            "Access-Control-Allow-Credentials": "true",
             "Content-Type": "application/json",
           },
         },
@@ -46,15 +44,7 @@ const App = () => {
   const fetchMessages = async () => {
     try {
       const response = await axios.get(
-        `https://api.green-api.com/waInstance${idInstance}/getMessage/${apiTokenInstance}`,
-        {
-          headers: {
-            "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "GET, POST, DELETE",
-            "Access-Control-Allow-Credentials": "true",
-            "Content-Type": "application/json",
-          },
-        },
+        `${apiUrl}/waInstance${idInstance}/getMessage/${apiTokenInstance}`,
       );
 
       const newMessages = response.data.filter(
@@ -72,7 +62,7 @@ const App = () => {
         const formattedNewMessages = filteredNewMessages.map((msg) => ({
           from: msg.senderData.chatId,
           text: msg.messageData.textMessageData.textMessage,
-          type: "textMessage", // По ТЗ приходит всегда текст,а так msg.messageData.typeMessage,
+          type: msg.messageData.typeMessage,
         }));
 
         return [...prevMessages, ...formattedNewMessages];
@@ -84,7 +74,7 @@ const App = () => {
 
   useEffect(() => {
     if (chatStarted) {
-      const interval = setInterval(fetchMessages, 5000); // Проверка новых сообщений каждые 5 секунд
+      const interval = setInterval(fetchMessages, 5000);
       return () => clearInterval(interval);
     }
   }, [chatStarted]);
@@ -94,12 +84,20 @@ const App = () => {
       {!chatStarted ? (
         <div>
           <input
+            type="url"
+            placeholder="API URL"
+            value={apiUrl}
+            onChange={(e) => setApiUrl(e.target.value)}
+          />
+          <input
+            required
             type="text"
             placeholder="ID"
             value={idInstance}
             onChange={(e) => setIdInstance(e.target.value)}
           />
           <input
+            required
             type="text"
             placeholder="API Токен"
             value={apiTokenInstance}
