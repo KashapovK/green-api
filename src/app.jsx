@@ -44,7 +44,7 @@ const App = () => {
   const fetchMessages = async () => {
     try {
       const response = await axios.get(
-        `${apiUrl}/waInstance${idInstance}/getMessage/${apiTokenInstance}`,
+        `${apiUrl}/waInstance/${idInstance}/getMessage/${apiTokenInstance}`,
       );
 
       const newMessages = response.data.filter(
