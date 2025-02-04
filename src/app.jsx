@@ -3,22 +3,6 @@ import axios from "axios";
 import Chat from "./chat";
 import Message from "./message";
 
-// Генерация моковых сообщений
-const generateMockMessage = (phoneNumber) => {
-  const messages = [
-    "Привет! Как дела?",
-    "ааааааааа",
-    "бббббббббббб",
-    "ддддддддддддддд",
-    "ггггггггггггггг",
-  ];
-  const randomIndex = Math.floor(Math.random() * messages.length);
-  return {
-    from: `${phoneNumber}@c.ru`,
-    text: messages[randomIndex],
-  };
-};
-
 const App = () => {
   const [idInstance, setIdInstance] = useState("");
   const [apiTokenInstance, setApiTokenInstance] = useState("");
@@ -36,17 +20,17 @@ const App = () => {
 
     try {
       await axios.post(
-        `https://api.green-api.com/wa/sendMessage/${idInstance}/${apiTokenInstance}`,
+        `https://api.green-api.com/waInstance${idInstance}/sendMessage/${apiTokenInstance}`,
         {
-          chatId: `${phoneNumber}@c.ru`,
+          chatId: `${phoneNumber}@c.us`,
           message: message,
         },
         {
           headers: {
             "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
+            "Access-Control-Allow-Methods": "GET, POST, DELETE",
             "Access-Control-Allow-Credentials": "true",
-            "Content-Type": "text/plain",
+            "Content-Type": "application/json",
           },
         },
       );
@@ -60,28 +44,21 @@ const App = () => {
   };
 
   const fetchMessages = async () => {
-    //
-    const mockMessage = generateMockMessage(phoneNumber);
-    setMessages((prevMessages) => [...prevMessages, mockMessage]);
-
-    // Закомментировано во время работы с моками
-    /*
     try {
       const response = await axios.get(
-        `https://api.green-api.com/wa/getMessages/${idInstance}/${apiTokenInstance}`,
+        `https://api.green-api.com/waInstance${idInstance}/getMessage/${apiTokenInstance}`,
         {
-          //CORS
           headers: {
             "Access-Control-Allow-Origin": "*",
-            "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE",
+            "Access-Control-Allow-Methods": "GET, POST, DELETE",
             "Access-Control-Allow-Credentials": "true",
-            "Content-Type": "text/plain",
+            "Content-Type": "application/json",
           },
         },
       );
 
       const newMessages = response.data.filter(
-        (msg) => msg.from === `${phoneNumber}@c.ru`,
+        (msg) => msg.from === `${phoneNumber}@c.us`,
       );
 
       setMessages((prevMessages) => {
@@ -89,12 +66,18 @@ const App = () => {
         const filteredNewMessages = newMessages.filter(
           (msg) => !existingMessages.has(msg.text),
         );
-        return [...prevMessages, ...filteredNewMessages];
+
+        const formattedNewMessages = filteredNewMessages.map((msg) => ({
+          from: msg.senderData.chatId,
+          text: msg.messageData.textMessageData.textMessage,
+          type: "textMessage", // По ТЗ приходит всегда текст,а так msg.messageData.typeMessage,
+        }));
+
+        return [...prevMessages, ...formattedNewMessages];
       });
     } catch (error) {
-      console.error("Ошибка при загрузки сообщений:", error);
+      console.error("Ошибка при загрузке сообщений:", error);
     }
-    */
   };
 
   useEffect(() => {
@@ -121,7 +104,8 @@ const App = () => {
             onChange={(e) => setApiTokenInstance(e.target.value)}
           />
           <input
-            type="text"
+            required
+            type="tel"
             placeholder="Номер телефона"
             value={phoneNumber}
             onChange={(e) => setPhoneNumber(e.target.value)}
