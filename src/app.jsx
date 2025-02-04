@@ -45,11 +45,6 @@ const App = () => {
     try {
       const response = await axios.get(
         `${apiUrl}/waInstance${idInstance}/getMessage/${apiTokenInstance}`,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        },
       );
 
       const newMessages = response.data.filter(
