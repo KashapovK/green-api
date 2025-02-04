@@ -67,7 +67,7 @@ const App = () => {
         const formattedNewMessages = filteredNewMessages.map((msg) => ({
           from: msg.senderData.chatId,
           text: msg.messageData.textMessageData.textMessage,
-          type: "textMessage", // По ТЗ приходит всегда текст,а так msg.messageData.typeMessage,
+          type: msg.messageData.typeMessage,
         }));
 
         return [...prevMessages, ...formattedNewMessages];
